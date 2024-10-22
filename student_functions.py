@@ -139,7 +139,7 @@ def UCS(matrix, start, end):
 
     return visited, path  # Return the visited nodes and the path
 
-# def GBFS(matrix, start, end):
+def GBFS(matrix, start, end):
     """
     Greedy Best First Search algorithm 
     heuristic : edge weights
@@ -163,23 +163,18 @@ def UCS(matrix, start, end):
 
     path = []  # Initialize the path list
     visited = {}  # Initialize the visited dictionary
-    openList = PriorityQueue()  # Initialize the priority queue for GBFS
-    openList.put((0, start))  # Enqueue the start node with heuristic 0
+    pq = PriorityQueue()  # Initialize the priority queue for GBFS
+    pq.put((0, start))  # Enqueue the start node with heuristic 0
     visited[start] = None  # Mark the start node as visited with no predecessor
-    closedList = set()  # Initialize the closed list
-    
 
-    while not openList.empty():  # While there are nodes to process
-        _, node = openList.get()  # Dequeue a node with the lowest heuristic
+    while not pq.empty():  # While there are nodes to process
+        _, node = pq.get()  # Dequeue a node with the lowest heuristic
         if node == end:  # If the end node is reached, break
             break
-
-        closedList.add(node)  # Add the node to the closed list
-
         for neighbor, connected in enumerate(matrix[node]):  # Iterate over neighbors
-            if connected and neighbor not in closedList:  # If connected and not visited
+            if connected and neighbor not in visited:  # If connected and not visited
                 heuristic = connected  # Assume that edge weights as heuristic
-                openList.put((heuristic, neighbor))  # Enqueue the neighbor with the heuristic
+                pq.put((heuristic, neighbor))  # Enqueue the neighbor with the heuristic
                 visited[neighbor] = node  # Mark the neighbor as visited with predecessor
 
     if end in visited:  # If the end node was reached
@@ -190,35 +185,6 @@ def UCS(matrix, start, end):
 
     return visited, path  # Return the visited nodes and the path
 
-import heapq
-
-def GBFS(matrix, start, end):
-
-    def heuristic(node, goal):
-        return abs(node - goal)  # Edge weight (this should be replaced with a better heuristic if necessary)
-
-    pq = [(heuristic(start, end), start)]  # Priority queue using heuristic
-    visited = {start: None}  # Dictionary to store the previous node of each visited node
-
-    while pq:
-        _, current = heapq.heappop(pq)
-
-        # If we reach the destination node, reconstruct the path
-        if current == end:
-            path = []
-            while current is not None:
-                path.append(current)
-                current = visited[current]
-            path.reverse()
-            return visited, path
-
-        # Traverse all neighbors
-        for neighbor, is_connected in enumerate(matrix[current]):
-            if is_connected and neighbor not in visited:
-                visited[neighbor] = current
-                heapq.heappush(pq, (heuristic(neighbor, end), neighbor))
-
-    return visited, []  # If no path is found
     
 
 def Astar(matrix, start, end, pos):
